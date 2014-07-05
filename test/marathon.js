@@ -4,6 +4,7 @@
  * Module dependencies.
  */
 
+var async = require('async');
 var should = require('should');
 var uuid = require('node-uuid');
 
@@ -16,50 +17,119 @@ var helper = require('./helper');
  */
 
 describe('Marathon', function() {
-  before(function() {
-    this.id = 'test-' + uuid.v4();
-  });
+  before(function(done) {
+    var self = this;
 
-  beforeEach(function() {
-    this.marathon = mesos.Marathon({
+    self.marathon = mesos.Marathon({
       host: process.env.VM_HOST || '10.141.141.10',
     });
-    this.marathon.on('debug', helper.debug('mesos:marathon'));
-  });
+    self.marathon.on('debug', helper.debug('mesos:marathon'));
 
-  it('should create app', function(done) {
+    self.id = 'test-' + uuid.v4();
+
     var options = {
-      id: this.id,
+      id: self.id,
       cmd: 'sleep 300',
       cpus: 1,
       mem: 16,
       instances: 1,
     };
 
-    this.marathon.apps.create(options, function(err) {
+    self.marathon.apps.create(options, function(err) {
       should.not.exist(err);
 
       done();
     });
   });
 
+  after(function(done) {
+    var self = this;
+
+    var jobs = {};
+
+    jobs.list = self.marathon.apps.list.bind(self);
+
+    jobs.destroy = ['list', function(cb, results) {
+      var ids = results.list.map(function(app) {
+        return app.id;
+      }).filter(function(id) {
+        return id.match(/^test-/);
+      });
+
+      if (!ids.length) return cb();
+
+      async.map(ids, self.marathon.apps.destroy.bind(self), cb);
+    }];
+
+    async.auto(jobs, done);
+  });
+
+  it('should create app', function(done) {
+    var self = this;
+
+    var id = 'test-' + uuid.v4();
+
+    var jobs = [];
+
+    jobs.push(function(cb) {
+      var options = {
+        id: id,
+        cmd: 'sleep 300',
+        cpus: 1,
+        mem: 16,
+        instances: 1,
+      };
+
+      self.marathon.apps.create(options, function(err) {
+        should.not.exist(err);
+
+        cb();
+      });
+    });
+
+    jobs.push(function(cb) {
+      self.marathon.apps.get(id, function(err, data) {
+        should.not.exist(err);
+
+        should.exist(data);
+        data.id.should.eql(id);
+
+        cb();
+      });
+    });
+
+    async.series(jobs, done);
+  });
+
   it('should return running apps', function(done) {
-    this.marathon.apps.list(function(err, data) {
+    var self = this;
+
+    self.marathon.apps.list(function(err, data) {
       should.not.exist(err);
 
       should(data).be.instanceof(Array);
       data.length.should.be.above(0);
+
+      data.map(function(app) {
+        return app.id;
+      }).should.containEql(self.id);
 
       done();
     });
   });
 
   it('should return running apps filtered by cmd', function(done) {
+    var self = this;
+
     this.marathon.apps.list({ cmd: 'sleep' }, function(err, data) {
       should.not.exist(err);
 
       should(data).be.instanceof(Array);
       data.length.should.be.above(0);
+
+      data.map(function(app) {
+        return app.id;
+      }).should.containEql(self.id);
 
       done();
     });
@@ -95,10 +165,43 @@ describe('Marathon', function() {
   it('should destroy app', function(done) {
     var self = this;
 
-    self.marathon.apps.destroy(self.id, function(err) {
-      should.not.exist(err);
+    var id = 'test-' + uuid.v4();
 
-      done();
+    var jobs = [];
+
+    jobs.push(function(cb) {
+      var options = {
+        id: id,
+        cmd: 'sleep 300',
+        cpus: 1,
+        mem: 16,
+        instances: 1,
+      };
+
+      self.marathon.apps.create(options, cb);
     });
+
+    jobs.push(function(cb) {
+      self.marathon.apps.get(id, cb);
+    });
+
+    jobs.push(function(cb) {
+      self.marathon.apps.destroy(id, function(err) {
+        should.not.exist(err);
+
+        cb();
+      });
+    });
+
+    jobs.push(function(cb) {
+      self.marathon.apps.get(id, function(err) {
+        should.exist(err);
+        err.message.should.eql('Not Found');
+
+        cb();
+      });
+    });
+
+    async.series(jobs, done);
   });
 });
