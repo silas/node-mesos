@@ -5,6 +5,7 @@
  */
 
 var async = require('async');
+var http = require('http');
 var should = require('should');
 var uuid = require('node-uuid');
 
@@ -35,33 +36,146 @@ describe('Marathon', function() {
       instances: 1,
     };
 
-    self.marathon.apps.create(options, function(err) {
-      should.not.exist(err);
+    self.events = [];
 
-      done();
+    self.http = http.createServer(function(req, res) {
+      var chunks = [];
+      var bodyLength = 0;
+
+      req.on('data', function(chunk) {
+       chunks.push(chunk);
+       bodyLength += chunk.length;
+      });
+
+      req.on('end', function() {
+        var body = Buffer.concat(chunks, bodyLength).toString();
+
+        self.events.push({
+          path: req.url,
+          body: body,
+        });
+
+        res.writeHead(200);
+        res.end();
+      });
     });
-  });
 
-  after(function(done) {
-    var self = this;
+    var eventHost = process.env.EVENT_HOST || '10.141.141.1';
+    var eventPort = process.env.EVENT_PORT || 8088;
+
+    self.callbackUrl = 'http://' + eventHost + ':' + eventPort + '/callback';
 
     var jobs = {};
 
-    jobs.list = self.marathon.apps.list.bind(self);
+    jobs.httpListen = function(cb) {
+      self.http.listen(eventPort, eventHost, cb);
+    };
 
-    jobs.destroy = ['list', function(cb, results) {
-      var ids = results.list.map(function(app) {
-        return app.id;
-      }).filter(function(id) {
-        return id.match(/^test-/);
+    jobs.clean = function(cb) {
+      helper.cleanMarathon(self, cb);
+    };
+
+    jobs.app = ['clean', function(cb) {
+      self.marathon.apps.create(options, function(err) {
+        should.not.exist(err);
+
+        cb();
       });
-
-      if (!ids.length) return cb();
-
-      async.map(ids, self.marathon.apps.destroy.bind(self), cb);
     }];
 
     async.auto(jobs, done);
+  });
+
+  after(function(done) {
+    this.http.close();
+
+    helper.cleanMarathon(this, done);
+  });
+
+  it('should handle event subscription', function(done) {
+    var self = this;
+
+    var id = 'test-' + uuid.v4();
+
+    var jobs = [];
+
+    jobs.push(function(cb) {
+      self.marathon.eventSubscriptions.list(function(err, data) {
+        should.not.exist(err);
+
+        should(data).be.instanceof(Array);
+
+        data.should.not.containEql(self.callbackUrl);
+
+        cb();
+      });
+    });
+
+    jobs.push(function(cb) {
+      self.marathon.eventSubscriptions.register(self.callbackUrl, cb);
+    });
+
+    jobs.push(function(cb) {
+      self.marathon.eventSubscriptions.list(function(err, data) {
+        should.not.exist(err);
+
+        should(data).be.instanceof(Array);
+
+        data.should.containEql(self.callbackUrl);
+
+        cb();
+      });
+    });
+
+    jobs.push(function(cb) {
+      var options = {
+        id: id,
+        cmd: 'sleep 123',
+        cpus: 1,
+        mem: 16,
+        instances: 1,
+      };
+
+      self.marathon.apps.create(options, function(err) {
+        should.not.exist(err);
+
+        cb();
+      });
+    });
+
+    jobs.push(function(cb) {
+      async.retry(
+        100,
+        function(cb) {
+          if (!self.events.length) {
+            var err = new Error('No events found');
+            return setTimeout(function() { cb(err); }, 100);
+          }
+
+          cb();
+        },
+        cb
+      );
+    });
+
+    async.series(jobs, function(err) {
+      should.not.exist(err);
+
+      var events = self.events;
+
+      events.should.not.eql([]);
+
+      events = events.filter(function(res) {
+        var data = res && res.body && JSON.parse(res.body);
+
+        return data.eventType === 'api_post_event' && data.appDefinition &&
+          data.appDefinition.id === id;
+      });
+
+      events.should.not.eql([]);
+
+      done();
+    });
   });
 
   it('should return all tasks', function(done) {

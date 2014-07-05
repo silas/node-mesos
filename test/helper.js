@@ -64,8 +64,37 @@ function waitOnTask(marathon, id, callback) {
 }
 
 /**
+ * Marathon cleanup
+ */
+
+function cleanMarathon(test, callback) {
+  var jobs = {};
+
+  jobs.eventSubscriptions = function(cb) {
+    test.marathon.eventSubscriptions.unregister(test.callbackUrl, cb);
+  };
+
+  jobs.list = test.marathon.apps.list.bind(test);
+
+  jobs.destroy = ['list', function(cb, results) {
+    var ids = results.list.map(function(app) {
+      return app.id;
+    }).filter(function(id) {
+      return id.match(/^test-/);
+    });
+
+    if (!ids.length) return cb();
+
+    async.map(ids, test.marathon.apps.destroy.bind(test), cb);
+  }];
+
+  async.auto(jobs, callback);
+}
+
+/**
  * Module Exports.
  */
 
 exports.debug = debugBuffer;
 exports.waitOnTask = waitOnTask;
+exports.cleanMarathon = cleanMarathon;
