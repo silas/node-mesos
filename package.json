@@ -1,0 +1,34 @@
+{
+  "name": "mesos",
+  "version": "0.1.0",
+  "description": "Mesos framework clients",
+  "main": "lib/index.js",
+  "dependencies": {
+    "rapi": "^0.2.0"
+  },
+  "devDependencies": {
+    "debug": "^1.0.2",
+    "jscs": "^1.5.7",
+    "jshint": "^2.5.1",
+    "mocha": "^1.20.1",
+    "node-uuid": "^1.4.1",
+    "should": "^4.0.4"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/jshint lib test && ./node_modules/.bin/jscs lib test && ./node_modules/.bin/mocha --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/silas/node-mesos.git"
+  },
+  "keywords": [
+    "mesos",
+    "marathon"
+  ],
+  "author": "Silas Sewell <silas@sewell.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/silas/node-mesos/issues"
+  },
+  "homepage": "https://github.com/silas/node-mesos"
+}

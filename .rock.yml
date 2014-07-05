@@ -1,0 +1,8 @@
+runtime: node010
+
+test: |
+  if [[ -n "$ROCK_ARGV" ]]; then
+    exec mocha --recursive --reporter spec "${ARGV[@]}"
+  else
+    {{ parent }}
+  fi
