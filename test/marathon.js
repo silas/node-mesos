@@ -64,6 +64,38 @@ describe('Marathon', function() {
     async.auto(jobs, done);
   });
 
+  it('should return all tasks', function(done) {
+    var self = this;
+
+    var jobs = [];
+
+    jobs.push(function(cb) {
+      helper.waitOnTask(self.marathon, self.id, cb);
+    });
+
+    jobs.push(function(cb) {
+      self.marathon.tasks(function(err, data) {
+        should.not.exist(err);
+
+        should(data).be.instanceof(Array);
+
+        var task = data.filter(function(task) {
+          return task.appId === self.id;
+        })[0];
+
+        should.exist(task);
+
+        task.should.have.properties('appId', 'id');
+
+        task.appId.should.eql(self.id);
+
+        cb();
+      });
+    });
+
+    async.series(jobs, done);
+  });
+
   it('should create app', function(done) {
     var self = this;
 
