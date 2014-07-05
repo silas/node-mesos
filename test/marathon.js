@@ -162,6 +162,47 @@ describe('Marathon', function() {
     });
   });
 
+  it('should update app', function(done) {
+    var self = this;
+
+    var jobs = [];
+
+    var options = {
+      id: self.id,
+      cmd: 'sleep 60',
+      cpus: 2,
+      instances: 2,
+    };
+
+    jobs.push(function(cb) {
+      self.marathon.apps.update(options, function(err) {
+        should.not.exist(err);
+
+        cb();
+      });
+    });
+
+    jobs.push(function(cb) {
+      self.marathon.apps.get(self.id, function(err, data) {
+        should.not.exist(err);
+
+        should.exist(data);
+
+        var keys = Object.keys(options);
+
+        should(data).have.properties(keys);
+
+        keys.forEach(function(key) {
+          data[key].should.eql(options[key]);
+        });
+
+        cb();
+      });
+    });
+
+    async.series(jobs, done);
+  });
+
   it('should destroy app', function(done) {
     var self = this;
 
