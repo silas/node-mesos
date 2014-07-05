@@ -3,6 +3,8 @@
 .jshintrc
 .npmignore
 .rock.yml
+.vagrant
+Vagrantfile
 config
 test
 tmp
