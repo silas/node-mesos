@@ -8,14 +8,12 @@ Mesos framework clients.
 
 ## Documentation
 
- * [Marathon](#marthon)
+ * [Marathon](#marathon)
 
 <a name="marathon"/>
 ### mesos.Marathon([options])
 
 Initialize a new Marathon client.
-
-See [Marathon REST][marathon-rest] documentation for more information.
 
 Options
 
@@ -30,6 +28,8 @@ var mesos = require('mesos');
 
 var marathon = mesos.Marathon({ host: '10.141.141.10' });
 ```
+
+See [Marathon REST][marathon-rest] documentation for more information.
 
 <a name="marathon-apps-create"/>
 ### marathon.apps.create(options, callback)
@@ -110,7 +110,7 @@ Options
  * id (String): app ID
 
 <a name="marathon-apps-tasks"/>
-### marathon.apps.destroy(options, callback)
+### marathon.apps.tasks(options, callback)
 
 List all running tasks for an application by ID.
 
@@ -156,7 +156,7 @@ Options
 <a name="marathon-tasks"/>
 ### marathon.tasks(callback)
 
-List tasks for the entire cluster.
+List all running tasks.
 
 ## Development
 
