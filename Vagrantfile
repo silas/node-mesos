@@ -10,6 +10,10 @@ Vagrant.configure('2') do |config|
 
   config.vm.provision :shell, inline: <<-eof
     set -o errexit
+
+    # enable event subscriptions
+    mkdir -p /etc/marathon/conf
+    echo http_callback > /etc/marathon/conf/event_subscriber
   eof
 
   config.vm.provider :virtualbox do |v|
