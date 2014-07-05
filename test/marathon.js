@@ -162,6 +162,54 @@ describe('Marathon', function() {
     });
   });
 
+  it('should return app versions', function(done) {
+    this.marathon.apps.versions(this.id, function(err, data) {
+      should.not.exist(err);
+
+      should(data).be.instanceof(Array);
+      data.length.should.be.above(0);
+
+      done();
+    });
+  });
+
+  it('should return app version', function(done) {
+    var self = this;
+
+    var jobs = [];
+
+    var options = { id: self.id };
+
+    jobs.push(function(cb) {
+      self.marathon.apps.versions(self.id, function(err, data) {
+        should.not.exist(err);
+
+        should(data).be.instanceof(Array);
+        data.length.should.be.above(0);
+
+        options.version = data[0];
+
+        cb();
+      });
+    });
+
+    jobs.push(function(cb) {
+      self.marathon.apps.version(options, function(err, data) {
+        should.not.exist(err);
+
+        should.exist(data);
+
+        data.should.have.properties('id', 'cmd');
+
+        data.id.should.eql(self.id);
+
+        cb();
+      });
+    });
+
+    async.series(jobs, done);
+  });
+
   it('should update app', function(done) {
     var self = this;
 
