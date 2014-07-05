@@ -293,4 +293,81 @@ describe('Marathon', function() {
 
     async.series(jobs, done);
   });
+
+  it('should return tasks', function(done) {
+    var self = this;
+
+    helper.waitOnTask(self.marathon, self.id, function(err, data) {
+      should.not.exist(err);
+
+      should(data).be.instanceof(Array);
+      data.length.should.be.above(0);
+
+      var task = data[0];
+
+      task.should.have.properties(
+        'appId',
+        'id',
+        'host',
+        'ports',
+        'version'
+      );
+
+      task.appId.should.eql(self.id);
+
+      done();
+    });
+  });
+
+  it('should kill task', function(done) {
+    var self = this;
+
+    var jobs = [];
+
+    jobs.task = function(cb) {
+      helper.waitOnTask(self.marathon, self.id, function(err, data) {
+        should.not.exist(err);
+
+        should(data).be.instanceof(Array);
+        data.length.should.be.above(0);
+
+        var task = data[0];
+
+        task.should.have.property('id');
+
+        cb(null, task);
+      });
+    };
+
+    jobs.kill = ['task', function(cb, results) {
+      var options = {
+        id: self.id,
+        task: results.task.id,
+      };
+
+      self.marathon.apps.kill(options, function(err) {
+        should.not.exist(err);
+
+        cb();
+      });
+    }];
+
+    jobs.check = ['kill', 'task', function(cb, results) {
+      self.marathon.apps.tasks(self.id, function(err, data) {
+        should.not.exist(err);
+
+        should(data).be.instanceof(Array);
+
+        var tasks = data.filter(function(task) {
+          return task.id === results.task.id;
+        });
+
+        tasks.should.eql([]);
+
+        cb();
+      });
+    }];
+
+    async.auto(jobs, done);
+  });
 });

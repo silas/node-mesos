@@ -6,6 +6,8 @@
 
 require('should');
 
+var async = require('async');
+
 /**
  * Buffer to string
  */
@@ -41,7 +43,29 @@ function debugBuffer(name) {
 }
 
 /**
+ * Wait on task
+ */
+
+function waitOnTask(marathon, id, callback) {
+  async.retry(
+    100,
+    function(cb) {
+      marathon.apps.tasks(id, function(err, data) {
+        if (err || !data || !data.length) {
+          if (!err) err = new Error('No tasks found');
+          return setTimeout(function() { cb(err); }, 100);
+        }
+
+        cb(null, data);
+      });
+    },
+    callback
+  );
+}
+
+/**
  * Module Exports.
  */
 
 exports.debug = debugBuffer;
+exports.waitOnTask = waitOnTask;
