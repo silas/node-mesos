@@ -72,7 +72,7 @@ describe('Marathon', function() {
     };
 
     jobs.clean = function(cb) {
-      helper.cleanMarathon(self, cb);
+      helper.marathon.clean(self, cb);
     };
 
     jobs.app = ['clean', function(cb) {
@@ -89,7 +89,7 @@ describe('Marathon', function() {
   after(function(done) {
     this.http.close();
 
-    helper.cleanMarathon(this, done);
+    helper.marathon.clean(this, done);
   });
 
   it('should handle event subscription', function(done) {
@@ -184,7 +184,7 @@ describe('Marathon', function() {
     var jobs = [];
 
     jobs.push(function(cb) {
-      helper.waitOnTask(self.marathon, self.id, cb);
+      helper.marathon.waitOnTask(self.marathon, self.id, cb);
     });
 
     jobs.push(function(cb) {
@@ -443,7 +443,7 @@ describe('Marathon', function() {
   it('should return tasks', function(done) {
     var self = this;
 
-    helper.waitOnTask(self.marathon, self.id, function(err, data) {
+    helper.marathon.waitOnTask(self.marathon, self.id, function(err, data) {
       should.not.exist(err);
 
       should(data).be.instanceof(Array);
@@ -471,7 +471,7 @@ describe('Marathon', function() {
     var jobs = [];
 
     jobs.task = function(cb) {
-      helper.waitOnTask(self.marathon, self.id, function(err, data) {
+      helper.marathon.waitOnTask(self.marathon, self.id, function(err, data) {
         should.not.exist(err);
 
         should(data).be.instanceof(Array);
