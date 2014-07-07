@@ -4,8 +4,6 @@ Vagrant.configure('2') do |config|
   config.vm.box = 'playa_mesos_ubuntu_14.04'
   config.vm.box_url = "http://downloads.mesosphere.io/playa-mesos/#{config.vm.box}.box"
 
-  config.vm.network :forwarded_port, :host => 8000, :guest => 8000
-
   config.vm.network :private_network, ip: ENV['VM_IP'] || '10.141.141.10'
 
   config.vm.provision :shell, inline: <<-eof
