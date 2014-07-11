@@ -8,7 +8,32 @@ Mesos framework clients.
 
 ## Documentation
 
+ * [Chronos](#chronos)
  * [Marathon](#marathon)
+
+<a name="chronos"/>
+### mesos.Chronos([options])
+
+Initialize a new Chronos client.
+
+Options
+
+ * host (String, default: 127.0.0.1): Chronos address
+ * port (String, default: 4400): Chronos HTTP port
+ * secure (Boolean, default: false): enable HTTPS
+
+Usage
+
+``` javascript
+var mesos = require('mesos');
+
+var chronos = mesos.Chronos({ host: '10.141.141.10' });
+```
+
+<a name="chronos-list"/>
+### chronos.list(callback)
+
+List jobs.
 
 <a name="marathon"/>
 ### mesos.Marathon([options])
@@ -161,7 +186,20 @@ List all running tasks.
 ## Development
 
  1. Install [Vagrant][vagrant]
- 1. Start box
+
+ 1. Fork and clone repository
+
+    ``` console
+    $ git clone https://github.com/${USER}/node-mesos.git
+    ```
+
+ 1. Switch to project directory
+
+    ``` console
+    $ cd node-mesos
+    ```
+
+ 1. Start VM
 
     ``` console
     $ vagrant up
