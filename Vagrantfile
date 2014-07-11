@@ -15,12 +15,13 @@ Vagrant.configure('2') do |config|
 
     # chronos: install
     pushd /opt
+      if [[ ! -f chronos.tgz ]]; then
+        curl -sSfL \
+          http://downloads.mesosphere.io/chronos/chronos-2.1.0_mesos-0.14.0-rc4.tgz \
+          --output chronos.tgz
+      fi
       rm -fr chronos
-      curl -sSfL \
-        http://downloads.mesosphere.io/chronos/chronos-2.1.0_mesos-0.14.0-rc4.tgz \
-        --output chronos.tgz
       tar xzf chronos.tgz
-      rm -f chronos.tgz
     popd
 
     # chronos: init
