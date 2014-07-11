@@ -37,8 +37,9 @@ Vagrant.configure('2') do |config|
     exec /opt/chronos/bin/start-chronos.bash --master zk://localhost:2181/mesos --zk_hosts zk://localhost:2181/mesos --http_port 4400
     EOF
 
-    # chronos: start
+    # restart
     service chronos restart
+    service marathon restart
   eof
 
   config.vm.provider :virtualbox do |v|

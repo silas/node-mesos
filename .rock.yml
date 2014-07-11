@@ -1,8 +1,14 @@
 runtime: node010
 
+env:
+  VM_IP: "10.141.141.10"
+
 test: |
   if [[ -n "$ROCK_ARGV" ]]; then
     exec mocha --recursive --timeout 15000 --reporter spec "${ARGV[@]}"
   else
     {{ parent }}
   fi
+
+marathon: open "http://${VM_IP}:8080"
+chronos: open "http://${VM_IP}:4400"
