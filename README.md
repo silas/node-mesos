@@ -187,10 +187,10 @@ List all running tasks.
 
  1. Install [Vagrant][vagrant]
 
- 1. Fork and clone repository
+ 1. Clone repository
 
     ``` console
-    $ git clone https://github.com/${USER}/node-mesos.git
+    $ git clone https://github.com/silas/node-mesos.git
     ```
 
  1. Switch to project directory
