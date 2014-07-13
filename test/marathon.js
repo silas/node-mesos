@@ -184,7 +184,7 @@ describe('Marathon', function() {
     var jobs = [];
 
     jobs.push(function(cb) {
-      helper.marathon.waitOnTask(self.marathon, self.id, cb);
+      helper.marathon.waitOnTask(self.marathon, self.id, true, cb);
     });
 
     jobs.push(function(cb) {
@@ -443,7 +443,8 @@ describe('Marathon', function() {
   it('should return tasks', function(done) {
     var self = this;
 
-    helper.marathon.waitOnTask(self.marathon, self.id, function(err, data) {
+    helper.marathon.waitOnTask(self.marathon, self.id, true,
+                               function(err, data) {
       should.not.exist(err);
 
       should(data).be.instanceof(Array);
@@ -471,7 +472,8 @@ describe('Marathon', function() {
     var jobs = [];
 
     jobs.task = function(cb) {
-      helper.marathon.waitOnTask(self.marathon, self.id, function(err, data) {
+      helper.marathon.waitOnTask(self.marathon, self.id, true,
+                                 function(err, data) {
         should.not.exist(err);
 
         should(data).be.instanceof(Array);
@@ -498,7 +500,11 @@ describe('Marathon', function() {
       });
     }];
 
-    jobs.check = ['kill', 'task', function(cb, results) {
+    jobs.wait = ['kill', function(cb) {
+      helper.marathon.waitOnTask(self.marathon, self.id, false, cb);
+    }];
+
+    jobs.check = ['wait', 'task', function(cb, results) {
       self.marathon.apps.tasks(self.id, function(err, data) {
         should.not.exist(err);
 

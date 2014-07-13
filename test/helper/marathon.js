@@ -12,13 +12,17 @@ var async = require('async');
  * Wait on task
  */
 
-function waitOnTask(marathon, id, callback) {
+function waitOnTask(marathon, id, wantExists, callback) {
   async.retry(
     100,
     function(cb) {
       marathon.apps.tasks(id, function(err, data) {
-        if (err || !data || !data.length) {
-          if (!err) err = new Error('No tasks found');
+        var dataExists = !!(data && data.length);
+
+        if (err || dataExists !== wantExists) {
+          if (!err) {
+            err = new Error('Task ' + (wantExists ? 'not found' : 'exists'));
+          }
           return setTimeout(function() { cb(err); }, 100);
         }
 

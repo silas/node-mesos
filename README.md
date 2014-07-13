@@ -30,10 +30,82 @@ var mesos = require('mesos');
 var chronos = mesos.Chronos({ host: '10.141.141.10' });
 ```
 
-<a name="chronos-list"/>
-### chronos.list(callback)
+<a name="chronos-jobs-create"/>
+### chronos.jobs.create(options, callback)
+
+Create job.
+
+Options
+
+ * name (String): job name
+ * schedule (String): [ISO-8601][iso-8601] recurring series time
+ * command (String): command to execute
+ * epsilon (String): run if missed within this time period ([ISO-8601][iso-8601] duration)
+ * owner (String): email address of job owner
+ * async (Boolean, default: false): run job asynchronously
+
+### chronos.jobs.destroy(options, callback)
+
+Delete job.
+
+Options
+
+ * name (String): job name
+
+<a name="chronos-jobs-list"/>
+### chronos.jobs.list(callback)
 
 List jobs.
+
+### chronos.jobs.search(options, callback)
+
+Search jobs.
+
+Options
+
+ * any (String, optional): query on any field
+ * name (String, optional): query on name
+ * command (String, optional): query on command
+ * limit (Number, default: 10): limit the number of results
+ * offset (Number, default: 0): offset results by number
+
+### chronos.jobs.start(options, callback)
+
+Manually start job.
+
+Options
+
+ * name (String): job name
+
+### chronos.jobs.stats(options, callback)
+
+Get jobs statistics.
+
+Options
+
+ * name (String, optional): job name
+ * percentile (String, optional): statistic type
+
+If you specify the job name you'll get all the statistics for that job, otherwise if you specify a percentile you'll get that statistic for all jobs.
+
+You must specify either a job name or a percentile.
+
+### chronos.tasks.done(options, callback)
+
+Mark async task as complete.
+
+Options
+
+ * id (String): task id
+ * statusCode (Integer, supports: 0, 1): task succeeded (0) or fail (1)
+
+### chronos.tasks.kill(options, callback)
+
+Kill tasks.
+
+Options
+
+ * job (String): job name
 
 <a name="marathon"/>
 ### mesos.Marathon([options])
@@ -221,5 +293,6 @@ List all running tasks.
 
 This work is licensed under the MIT License (see the LICENSE file).
 
+[iso-8601]: https://github.com/cylc/cylc/wiki/ISO-8601
 [marathon-rest]: https://github.com/mesosphere/marathon/blob/master/REST.md
 [vagrant]: http://www.vagrantup.com/

@@ -27,7 +27,7 @@ describe('Chronos', function() {
     self.chronos.on('debug', helper.debug('mesos:chronos'));
 
     self.exists = function(name, cb) {
-      self.chronos.list(function(err, data) {
+      self.chronos.jobs.list(function(err, data) {
         if (err) return cb(err);
 
         var exists = data.some(function(job) {
@@ -57,7 +57,7 @@ describe('Chronos', function() {
         async: false,
       };
 
-      self.chronos.create(options, cb);
+      self.chronos.jobs.create(options, cb);
     };
 
     async.auto(jobs, done);
@@ -66,21 +66,21 @@ describe('Chronos', function() {
   afterEach(function(done) {
     var self = this;
 
-    self.chronos.list(function(err, data) {
+    self.chronos.jobs.list(function(err, data) {
       var names = data.map(function(job) {
         return job.name;
       }).filter(function(name) {
         return name.match(/^test-.*/);
       });
 
-      async.map(names, self.chronos.destroy.bind(self.chronos), done);
+      async.map(names, self.chronos.jobs.destroy.bind(self.chronos.jobs), done);
     });
   });
 
   it('should return jobs', function(done) {
     var self = this;
 
-    self.chronos.list(function(err, data) {
+    self.chronos.jobs.list(function(err, data) {
       should.not.exist(err);
 
       should(data).be.instanceof(Array);
@@ -109,7 +109,7 @@ describe('Chronos', function() {
       async: false,
     };
 
-    this.chronos.create(options, function(err) {
+    this.chronos.jobs.create(options, function(err) {
       should.not.exist(err);
 
       done();
@@ -126,7 +126,7 @@ describe('Chronos', function() {
     };
 
     jobs.destroy = ['before', function(cb) {
-      self.chronos.destroy(self.name, cb);
+      self.chronos.jobs.destroy(self.name, cb);
     }];
 
     jobs.after = ['destroy', function(cb) {
