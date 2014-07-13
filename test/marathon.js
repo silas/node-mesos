@@ -76,7 +76,7 @@ describe('Marathon', function() {
     };
 
     jobs.app = ['clean', function(cb) {
-      self.marathon.apps.create(options, function(err) {
+      self.marathon.app.create(options, function(err) {
         should.not.exist(err);
 
         cb();
@@ -100,7 +100,7 @@ describe('Marathon', function() {
     var jobs = [];
 
     jobs.push(function(cb) {
-      self.marathon.eventSubscriptions.list(function(err, data) {
+      self.marathon.eventSubscription.list(function(err, data) {
         should.not.exist(err);
 
         should(data).be.instanceof(Array);
@@ -112,11 +112,11 @@ describe('Marathon', function() {
     });
 
     jobs.push(function(cb) {
-      self.marathon.eventSubscriptions.register(self.callbackUrl, cb);
+      self.marathon.eventSubscription.register(self.callbackUrl, cb);
     });
 
     jobs.push(function(cb) {
-      self.marathon.eventSubscriptions.list(function(err, data) {
+      self.marathon.eventSubscription.list(function(err, data) {
         should.not.exist(err);
 
         should(data).be.instanceof(Array);
@@ -136,7 +136,7 @@ describe('Marathon', function() {
         instances: 1,
       };
 
-      self.marathon.apps.create(options, function(err) {
+      self.marathon.app.create(options, function(err) {
         should.not.exist(err);
 
         cb();
@@ -226,7 +226,7 @@ describe('Marathon', function() {
         instances: 1,
       };
 
-      self.marathon.apps.create(options, function(err) {
+      self.marathon.app.create(options, function(err) {
         should.not.exist(err);
 
         cb();
@@ -234,7 +234,7 @@ describe('Marathon', function() {
     });
 
     jobs.push(function(cb) {
-      self.marathon.apps.get(id, function(err, data) {
+      self.marathon.app.get(id, function(err, data) {
         should.not.exist(err);
 
         should.exist(data);
@@ -250,7 +250,7 @@ describe('Marathon', function() {
   it('should return running apps', function(done) {
     var self = this;
 
-    self.marathon.apps.list(function(err, data) {
+    self.marathon.app.list(function(err, data) {
       should.not.exist(err);
 
       should(data).be.instanceof(Array);
@@ -267,7 +267,7 @@ describe('Marathon', function() {
   it('should return running apps filtered by cmd', function(done) {
     var self = this;
 
-    this.marathon.apps.list({ cmd: 'sleep' }, function(err, data) {
+    this.marathon.app.list({ cmd: 'sleep' }, function(err, data) {
       should.not.exist(err);
 
       should(data).be.instanceof(Array);
@@ -282,7 +282,7 @@ describe('Marathon', function() {
   });
 
   it('should not return running apps filtered by cmd', function(done) {
-    this.marathon.apps.list({ cmd: 'notfound' }, function(err, data) {
+    this.marathon.app.list({ cmd: 'notfound' }, function(err, data) {
       should.not.exist(err);
 
       should(data).be.instanceof(Array);
@@ -295,7 +295,7 @@ describe('Marathon', function() {
   it('should return running app', function(done) {
     var self = this;
 
-    self.marathon.apps.get(self.id, function(err, data) {
+    self.marathon.app.get(self.id, function(err, data) {
       should.not.exist(err);
 
       should.exist(data);
@@ -309,7 +309,7 @@ describe('Marathon', function() {
   });
 
   it('should return app versions', function(done) {
-    this.marathon.apps.versions(this.id, function(err, data) {
+    this.marathon.app.versions(this.id, function(err, data) {
       should.not.exist(err);
 
       should(data).be.instanceof(Array);
@@ -327,7 +327,7 @@ describe('Marathon', function() {
     var options = { id: self.id };
 
     jobs.push(function(cb) {
-      self.marathon.apps.versions(self.id, function(err, data) {
+      self.marathon.app.versions(self.id, function(err, data) {
         should.not.exist(err);
 
         should(data).be.instanceof(Array);
@@ -340,7 +340,7 @@ describe('Marathon', function() {
     });
 
     jobs.push(function(cb) {
-      self.marathon.apps.version(options, function(err, data) {
+      self.marathon.app.version(options, function(err, data) {
         should.not.exist(err);
 
         should.exist(data);
@@ -369,7 +369,7 @@ describe('Marathon', function() {
     };
 
     jobs.push(function(cb) {
-      self.marathon.apps.update(options, function(err) {
+      self.marathon.app.update(options, function(err) {
         should.not.exist(err);
 
         cb();
@@ -377,7 +377,7 @@ describe('Marathon', function() {
     });
 
     jobs.push(function(cb) {
-      self.marathon.apps.get(self.id, function(err, data) {
+      self.marathon.app.get(self.id, function(err, data) {
         should.not.exist(err);
 
         should.exist(data);
@@ -413,15 +413,15 @@ describe('Marathon', function() {
         instances: 1,
       };
 
-      self.marathon.apps.create(options, cb);
+      self.marathon.app.create(options, cb);
     });
 
     jobs.push(function(cb) {
-      self.marathon.apps.get(id, cb);
+      self.marathon.app.get(id, cb);
     });
 
     jobs.push(function(cb) {
-      self.marathon.apps.destroy(id, function(err) {
+      self.marathon.app.destroy(id, function(err) {
         should.not.exist(err);
 
         cb();
@@ -429,7 +429,7 @@ describe('Marathon', function() {
     });
 
     jobs.push(function(cb) {
-      self.marathon.apps.get(id, function(err) {
+      self.marathon.app.get(id, function(err) {
         should.exist(err);
         err.message.should.eql('Not Found');
 
@@ -493,7 +493,7 @@ describe('Marathon', function() {
         task: results.task.id,
       };
 
-      self.marathon.apps.kill(options, function(err) {
+      self.marathon.app.kill(options, function(err) {
         should.not.exist(err);
 
         cb();
@@ -505,7 +505,7 @@ describe('Marathon', function() {
     }];
 
     jobs.check = ['wait', 'task', function(cb, results) {
-      self.marathon.apps.tasks(self.id, function(err, data) {
+      self.marathon.app.tasks(self.id, function(err, data) {
         should.not.exist(err);
 
         should(data).be.instanceof(Array);

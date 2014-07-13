@@ -16,7 +16,7 @@ function waitOnTask(marathon, id, wantExists, callback) {
   async.retry(
     100,
     function(cb) {
-      marathon.apps.tasks(id, function(err, data) {
+      marathon.app.tasks(id, function(err, data) {
         var dataExists = !!(data && data.length);
 
         if (err || dataExists !== wantExists) {
@@ -41,10 +41,10 @@ function clean(test, callback) {
   var jobs = {};
 
   jobs.eventSubscriptions = function(cb) {
-    test.marathon.eventSubscriptions.unregister(test.callbackUrl, cb);
+    test.marathon.eventSubscription.unregister(test.callbackUrl, cb);
   };
 
-  jobs.list = test.marathon.apps.list.bind(test);
+  jobs.list = test.marathon.app.list.bind(test);
 
   jobs.destroy = ['list', function(cb, results) {
     var ids = results.list.map(function(app) {
@@ -55,7 +55,7 @@ function clean(test, callback) {
 
     if (!ids.length) return cb();
 
-    async.map(ids, test.marathon.apps.destroy.bind(test), cb);
+    async.map(ids, test.marathon.app.destroy.bind(test), cb);
   }];
 
   async.auto(jobs, callback);

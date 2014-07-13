@@ -1,10 +1,10 @@
 {
   "name": "mesos",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Mesos framework clients",
   "main": "lib/index.js",
   "dependencies": {
-    "rapi": "^0.4.0"
+    "rapi": "^0.5.0"
   },
   "devDependencies": {
     "async": "^0.9.0",
