@@ -146,4 +146,110 @@ describe('Chronos', function() {
       done();
     });
   });
+
+  it('should start job', function(done) {
+    var self = this;
+
+    self.chronos.jobs.start(self.name, function(err) {
+      should.not.exist(err);
+
+      done();
+    });
+  });
+
+  it('should return job stats', function(done) {
+    var self = this;
+
+    self.chronos.jobs.stats(self.name, function(err, data) {
+      should.not.exist(err);
+
+      should.exist(data);
+
+      data.should.have.keys(
+        '75thPercentile',
+        '95thPercentile',
+        '98thPercentile',
+        '99thPercentile',
+        'median',
+        'mean',
+        'count'
+      );
+
+      done();
+    });
+  });
+
+  it('should return stat for all jobs', function(done) {
+    var self = this;
+
+    var opts = {
+      percentile: 'mean',
+    };
+
+    self.chronos.jobs.stats(opts, function(err, data) {
+      should.not.exist(err);
+
+      should.exist(data);
+
+      var count = 0;
+
+      data.forEach(function(job) {
+        job.should.have.keys(
+          'jobNameLabel',
+          'time'
+        );
+
+        if (job.jobNameLabel === self.name) count++;
+      });
+
+      count.should.be.above(0);
+
+      done();
+    });
+  });
+
+  it('should return jobs with search restrictions', function(done) {
+    var self = this;
+
+    self.chronos.jobs.search(self.name, function(err, data) {
+      should.not.exist(err);
+
+      should(data).be.instanceof(Array);
+
+      data.length.should.equal(1);
+
+      data[0].name.should.eql(self.name);
+      data[0].owner.should.eql(self.owner);
+      data[0].disabled.should.eql(false);
+
+      done();
+    });
+  });
+
+  it('should update task', function(done) {
+    var self = this;
+
+    var opts = {
+      id: '123',
+      statusCode: 0,
+    };
+
+    self.chronos.tasks.update(opts, function(err) {
+      should.not.exist(err);
+
+      done();
+    });
+  });
+
+  it('should kill task', function(done) {
+    var self = this;
+
+    var opts = { job: self.name };
+
+    self.chronos.tasks.kill(opts, function(err) {
+      should.not.exist(err);
+
+      done();
+    });
+  });
 });

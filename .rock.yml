@@ -10,5 +10,11 @@ test: |
     {{ parent }}
   fi
 
+coverage: |
+  istanbul cover _mocha -- --recursive --timeout 15000
+  if type -f open &>/dev/null; then
+    open coverage/lcov-report/index.html
+  fi
+
 marathon: open "http://${VM_IP}:8080"
 chronos: open "http://${VM_IP}:4400"

@@ -1,6 +1,6 @@
 {
   "name": "mesos",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Mesos framework clients",
   "main": "lib/index.js",
   "dependencies": {
@@ -9,6 +9,7 @@
   "devDependencies": {
     "async": "^0.9.0",
     "debug": "^1.0.3",
+    "istanbul": "^0.3.0",
     "jscs": "^1.5.8",
     "jshint": "^2.5.2",
     "lodash": "^2.4.1",

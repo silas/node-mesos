@@ -90,9 +90,9 @@ If you specify the job name you'll get all the statistics for that job, otherwis
 
 You must specify either a job name or a percentile.
 
-### chronos.tasks.done(options, callback)
+### chronos.tasks.update(options, callback)
 
-Mark async task as complete.
+Update task.
 
 Options
 
