@@ -28,7 +28,7 @@ describe('Marathon', function() {
 
     self.id = 'test-' + uuid.v4();
 
-    var options = {
+    var opts = {
       id: self.id,
       cmd: 'sleep 300',
       cpus: 1,
@@ -76,7 +76,7 @@ describe('Marathon', function() {
     };
 
     jobs.app = ['clean', function(cb) {
-      self.marathon.app.create(options, function(err) {
+      self.marathon.app.create(opts, function(err) {
         should.not.exist(err);
 
         cb();
@@ -128,7 +128,7 @@ describe('Marathon', function() {
     });
 
     jobs.push(function(cb) {
-      var options = {
+      var opts = {
         id: id,
         cmd: 'sleep 123',
         cpus: 1,
@@ -136,7 +136,7 @@ describe('Marathon', function() {
         instances: 1,
       };
 
-      self.marathon.app.create(options, function(err) {
+      self.marathon.app.create(opts, function(err) {
         should.not.exist(err);
 
         cb();
@@ -218,7 +218,7 @@ describe('Marathon', function() {
     var jobs = [];
 
     jobs.push(function(cb) {
-      var options = {
+      var opts = {
         id: id,
         cmd: 'sleep 300',
         cpus: 1,
@@ -226,7 +226,7 @@ describe('Marathon', function() {
         instances: 1,
       };
 
-      self.marathon.app.create(options, function(err) {
+      self.marathon.app.create(opts, function(err) {
         should.not.exist(err);
 
         cb();
@@ -324,7 +324,7 @@ describe('Marathon', function() {
 
     var jobs = [];
 
-    var options = { id: self.id };
+    var opts = { id: self.id };
 
     jobs.push(function(cb) {
       self.marathon.app.versions(self.id, function(err, data) {
@@ -333,14 +333,14 @@ describe('Marathon', function() {
         should(data).be.instanceof(Array);
         data.length.should.be.above(0);
 
-        options.version = data[0];
+        opts.version = data[0];
 
         cb();
       });
     });
 
     jobs.push(function(cb) {
-      self.marathon.app.version(options, function(err, data) {
+      self.marathon.app.version(opts, function(err, data) {
         should.not.exist(err);
 
         should.exist(data);
@@ -361,7 +361,7 @@ describe('Marathon', function() {
 
     var jobs = [];
 
-    var options = {
+    var opts = {
       id: self.id,
       cmd: 'sleep 60',
       cpus: 2,
@@ -369,7 +369,7 @@ describe('Marathon', function() {
     };
 
     jobs.push(function(cb) {
-      self.marathon.app.update(options, function(err) {
+      self.marathon.app.update(opts, function(err) {
         should.not.exist(err);
 
         cb();
@@ -382,12 +382,12 @@ describe('Marathon', function() {
 
         should.exist(data);
 
-        var keys = Object.keys(options);
+        var keys = Object.keys(opts);
 
         should(data).have.properties(keys);
 
         keys.forEach(function(key) {
-          data[key].should.eql(options[key]);
+          data[key].should.eql(opts[key]);
         });
 
         cb();
@@ -405,7 +405,7 @@ describe('Marathon', function() {
     var jobs = [];
 
     jobs.push(function(cb) {
-      var options = {
+      var opts = {
         id: id,
         cmd: 'sleep 300',
         cpus: 1,
@@ -413,7 +413,7 @@ describe('Marathon', function() {
         instances: 1,
       };
 
-      self.marathon.app.create(options, cb);
+      self.marathon.app.create(opts, cb);
     });
 
     jobs.push(function(cb) {
@@ -488,12 +488,12 @@ describe('Marathon', function() {
     };
 
     jobs.kill = ['task', function(cb, results) {
-      var options = {
+      var opts = {
         id: self.id,
         task: results.task.id,
       };
 
-      self.marathon.app.kill(options, function(err) {
+      self.marathon.app.kill(opts, function(err) {
         should.not.exist(err);
 
         cb();

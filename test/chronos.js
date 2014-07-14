@@ -48,7 +48,7 @@ describe('Chronos', function() {
     var jobs = {};
 
     jobs.create = function(cb) {
-      var options = {
+      var opts = {
         schedule: 'R10/2012-10-01T05:52:00Z/PT2S',
         name: self.name,
         epsilon: 'PT15M',
@@ -57,7 +57,7 @@ describe('Chronos', function() {
         async: false,
       };
 
-      self.chronos.job.create(options, cb);
+      self.chronos.job.create(opts, cb);
     };
 
     async.auto(jobs, done);
@@ -100,7 +100,7 @@ describe('Chronos', function() {
   });
 
   it('should create job', function(done) {
-    var options = {
+    var opts = {
       schedule: 'R10/2012-10-01T05:52:00Z/PT2S',
       name: 'test-' + uuid.v4(),
       epsilon: 'PT15M',
@@ -109,7 +109,7 @@ describe('Chronos', function() {
       async: false,
     };
 
-    this.chronos.job.create(options, function(err) {
+    this.chronos.job.create(opts, function(err) {
       should.not.exist(err);
 
       done();

@@ -12,7 +12,7 @@ Mesos framework clients.
  * [Marathon](#marathon)
 
 <a name="chronos"/>
-### mesos.Chronos([options])
+### mesos.Chronos([opts])
 
 Initialize a new Chronos client.
 
@@ -31,7 +31,7 @@ var chronos = mesos.Chronos({ host: '10.141.141.10' });
 ```
 
 <a name="chronos-job-create"/>
-### chronos.job.create(options, callback)
+### chronos.job.create(opts, callback)
 
 Create job.
 
@@ -44,7 +44,7 @@ Options
  * owner (String): email address of job owner
  * async (Boolean, default: false): run job asynchronously
 
-### chronos.job.destroy(options, callback)
+### chronos.job.destroy(opts, callback)
 
 Delete job.
 
@@ -57,7 +57,7 @@ Options
 
 List jobs.
 
-### chronos.job.search(options, callback)
+### chronos.job.search(opts, callback)
 
 Search jobs.
 
@@ -69,7 +69,7 @@ Options
  * limit (Number, default: 10): limit the number of results
  * offset (Number, default: 0): offset results by number
 
-### chronos.job.start(options, callback)
+### chronos.job.start(opts, callback)
 
 Manually start job.
 
@@ -77,7 +77,7 @@ Options
 
  * name (String): job name
 
-### chronos.job.stats(options, callback)
+### chronos.job.stats(opts, callback)
 
 Get jobs statistics.
 
@@ -90,7 +90,7 @@ If you specify the job name you'll get all the statistics for that job, otherwis
 
 You must specify either a job name or a percentile.
 
-### chronos.task.update(options, callback)
+### chronos.task.update(opts, callback)
 
 Update task.
 
@@ -99,7 +99,7 @@ Options
  * id (String): task id
  * statusCode (Integer, supports: 0, 1): task succeeded (0) or fail (1)
 
-### chronos.task.kill(options, callback)
+### chronos.task.kill(opts, callback)
 
 Kill tasks.
 
@@ -108,7 +108,7 @@ Options
  * job (String): job name
 
 <a name="marathon"/>
-### mesos.Marathon([options])
+### mesos.Marathon([opts])
 
 Initialize a new Marathon client.
 
@@ -129,7 +129,7 @@ var marathon = mesos.Marathon({ host: '10.141.141.10' });
 See [Marathon REST][marathon-rest] documentation for more information.
 
 <a name="marathon-app-create"/>
-### marathon.app.create(options, callback)
+### marathon.app.create(opts, callback)
 
 Create and start a new application.
 
@@ -144,7 +144,7 @@ Options
 And more, see [docs](https://github.com/mesosphere/marathon/blob/master/REST.md#post-v2apps).
 
 <a name="marathon-app-list"/>
-### marathon.app.list([options], callback)
+### marathon.app.list([opts], callback)
 
 List all running applications.
 
@@ -153,7 +153,7 @@ Options
  * cmd (String, optional): filter apps by command
 
 <a name="marathon-app-get"/>
-### marathon.app.get(options, callback)
+### marathon.app.get(opts, callback)
 
 Get application with by ID.
 
@@ -162,7 +162,7 @@ Options
  * id (String): app ID
 
 <a name="marathon-app-versions"/>
-### marathon.app.versions(options, callback)
+### marathon.app.versions(opts, callback)
 
 List the versions of an application by ID.
 
@@ -171,7 +171,7 @@ Options
  * id (String): app ID
 
 <a name="marathon-app-version"/>
-### marathon.app.version(options, callback)
+### marathon.app.version(opts, callback)
 
 List the configuration of an application by ID at a specified version.
 
@@ -181,7 +181,7 @@ Options
  * version (String): app version
 
 <a name="marathon-app-update"/>
-### marathon.app.update(options, callback)
+### marathon.app.update(opts, callback)
 
 Change parameters of a running application. The new application parameters
 apply only to subsequently created tasks, and currently running tasks are
@@ -198,7 +198,7 @@ Options
 And more, see [docs](https://github.com/mesosphere/marathon/blob/master/REST.md#put-v2appsappid).
 
 <a name="marathon-app-destroy"/>
-### marathon.app.destroy(options, callback)
+### marathon.app.destroy(opts, callback)
 
 Destroy an applicationb by ID.
 
@@ -207,7 +207,7 @@ Options
  * id (String): app ID
 
 <a name="marathon-app-tasks"/>
-### marathon.app.tasks(options, callback)
+### marathon.app.tasks(opts, callback)
 
 List all running tasks for an application by ID.
 
@@ -216,7 +216,7 @@ Options
  * id (String): app ID
 
 <a name="marathon-app-kill"/>
-### marathon.app.kill(options, callback)
+### marathon.app.kill(opts, callback)
 
 Kill tasks that belong to an application.
 
@@ -228,7 +228,7 @@ Options
  * scale (Boolean, optional): scale application down by one
 
 <a name="marathon-eventSubscription-register"/>
-### marathon.eventSubscription.register(options, callback)
+### marathon.eventSubscription.register(opts, callback)
 
 Register a callback URL as an event subscriber.
 
@@ -242,7 +242,7 @@ Options
 List all event subscriber callback URLs.
 
 <a name="marathon-eventSubscription-unregister"/>
-### marathon.eventSubscription.unregister(options, callback)
+### marathon.eventSubscription.unregister(opts, callback)
 
 Unregister a callback URL.
 
