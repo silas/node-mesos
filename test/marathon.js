@@ -285,8 +285,7 @@ describe('Marathon', function() {
     this.marathon.app.list({ cmd: 'notfound' }, function(err, data) {
       should.not.exist(err);
 
-      should(data).be.instanceof(Array);
-      data.length.should.equal(0);
+      data.should.eql([]);
 
       done();
     });
@@ -431,7 +430,7 @@ describe('Marathon', function() {
     jobs.push(function(cb) {
       self.marathon.app.get(id, function(err) {
         should.exist(err);
-        err.message.should.eql('Not Found');
+        err.message.should.eql('marathon: app.get: not found');
 
         cb();
       });

@@ -1,6 +1,6 @@
 # Mesos
 
-Mesos framework clients.
+Mesos clients.
 
  * [Documentation](#documentation)
  * [Development](#development)

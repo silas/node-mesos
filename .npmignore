@@ -6,5 +6,6 @@
 .vagrant
 Vagrantfile
 config
+coverage
 test
 tmp
