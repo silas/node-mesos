@@ -9,33 +9,12 @@ Vagrant.configure('2') do |config|
   config.vm.provision :shell, inline: <<-eof.gsub(/^\s*/, '')
     set -o errexit
 
-    # marathon: enable event subscriptions
+    apt-get update
+    apt-get install chronos marathon -y
+
+    # enable event subscriptions
     mkdir -p /etc/marathon/conf
     echo http_callback > /etc/marathon/conf/event_subscriber
-
-    # chronos: install
-    pushd /opt
-      if [[ ! -f chronos.tgz ]]; then
-        curl -sSfL \
-          http://downloads.mesosphere.io/chronos/chronos-2.1.0_mesos-0.14.0-rc4.tgz \
-          --output chronos.tgz
-      fi
-      rm -fr chronos
-      tar xzf chronos.tgz
-    popd
-
-    # chronos: init
-    cat << EOF > /etc/init/chronos.conf
-    description "Chronos"
-
-    start on runlevel [2345]
-    stop on runlevel [!2345]
-
-    respawn
-    respawn limit 10 5
-
-    exec /opt/chronos/bin/start-chronos.bash --master zk://localhost:2181/mesos --zk_hosts zk://localhost:2181/mesos --http_port 4400
-    EOF
 
     # restart
     service chronos restart
