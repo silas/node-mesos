@@ -24,7 +24,7 @@ describe('Chronos', function() {
     self.chronos = mesos.Chronos({
       host: process.env.VM_HOST || '10.141.141.10',
     });
-    self.chronos.on('debug', helper.debug('mesos:chronos'));
+    self.chronos.on('log', helper.debug('mesos:chronos'));
 
     self.exists = function(name, cb) {
       self.chronos.job.list(function(err, data) {

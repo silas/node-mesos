@@ -24,7 +24,7 @@ describe('Marathon', function() {
     self.marathon = mesos.Marathon({
       host: process.env.VM_HOST || '10.141.141.10',
     });
-    self.marathon.on('debug', helper.debug('mesos:marathon'));
+    self.marathon.on('log', helper.debug('mesos:marathon'));
 
     self.id = 'test-' + uuid.v4();
 
