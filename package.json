@@ -1,17 +1,17 @@
 {
   "name": "mesos",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "Mesos clients",
   "main": "lib/index.js",
   "dependencies": {
-    "papi": "^0.13.0"
+    "papi": "^0.15.0"
   },
   "devDependencies": {
     "async": "^0.9.0",
-    "debug": "^1.0.4",
-    "istanbul": "^0.3.0",
-    "jscs": "^1.5.8",
-    "jshint": "^2.5.2",
+    "debug": "^2.0.0",
+    "istanbul": "^0.3.2",
+    "jscs": "^1.6.2",
+    "jshint": "^2.5.5",
     "lodash": "^2.4.1",
     "mocha": "^1.21.0",
     "node-uuid": "^1.4.1",
