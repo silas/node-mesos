@@ -34,6 +34,7 @@ describe('Marathon', function() {
       cpus: 1,
       mem: 16,
       instances: 1,
+      minimumHealthCapacity: 0,
     };
 
     self.events = [];
@@ -134,6 +135,7 @@ describe('Marathon', function() {
         cpus: 1,
         mem: 16,
         instances: 1,
+        minimumHealthCapacity: 0,
       };
 
       self.marathon.app.create(opts, function(err) {
@@ -193,15 +195,17 @@ describe('Marathon', function() {
 
         should(data).be.instanceof(Array);
 
+        var id = '/' + self.id;
+
         var task = data.filter(function(task) {
-          return task.appId === self.id;
+          return task.appId === id;
         })[0];
 
         should.exist(task);
 
         task.should.have.properties('appId', 'id');
 
-        task.appId.should.eql(self.id);
+        task.appId.should.eql(id);
 
         cb();
       });
@@ -224,6 +228,7 @@ describe('Marathon', function() {
         cpus: 1,
         mem: 16,
         instances: 1,
+        minimumHealthCapacity: 0,
       };
 
       self.marathon.app.create(opts, function(err) {
@@ -234,11 +239,15 @@ describe('Marathon', function() {
     });
 
     jobs.push(function(cb) {
+      helper.marathon.waitOnTask(self.marathon, id, false, cb);
+    });
+
+    jobs.push(function(cb) {
       self.marathon.app.get(id, function(err, data) {
         should.not.exist(err);
 
         should.exist(data);
-        data.id.should.eql(id);
+        data.id.should.eql('/' + id);
 
         cb();
       });
@@ -258,7 +267,7 @@ describe('Marathon', function() {
 
       data.map(function(app) {
         return app.id;
-      }).should.containEql(self.id);
+      }).should.containEql('/' + self.id);
 
       done();
     });
@@ -275,7 +284,7 @@ describe('Marathon', function() {
 
       data.map(function(app) {
         return app.id;
-      }).should.containEql(self.id);
+      }).should.containEql('/' + self.id);
 
       done();
     });
@@ -301,7 +310,7 @@ describe('Marathon', function() {
 
       data.should.have.properties('id', 'cmd');
 
-      data.id.should.eql(self.id);
+      data.id.should.eql('/' + self.id);
 
       done();
     });
@@ -346,7 +355,7 @@ describe('Marathon', function() {
 
         data.should.have.properties('id', 'cmd');
 
-        data.id.should.eql(self.id);
+        data.id.should.eql('/' + self.id);
 
         cb();
       });
@@ -365,6 +374,8 @@ describe('Marathon', function() {
       cmd: 'sleep 60',
       cpus: 2,
       instances: 2,
+      force: true,
+      minimumHealthCapacity: 0,
     };
 
     jobs.push(function(cb) {
@@ -376,21 +387,27 @@ describe('Marathon', function() {
     });
 
     jobs.push(function(cb) {
-      self.marathon.app.get(self.id, function(err, data) {
-        should.not.exist(err);
+      async.retry(
+        100,
+        function(cb) {
+          self.marathon.app.get(self.id, function(err, data) {
+            try {
+              should.not.exist(err);
 
-        should.exist(data);
+              should.exist(data);
 
-        var keys = Object.keys(opts);
+              data.cmd.should.equal('sleep 60');
+              data.cpus.should.equal(2);
+              data.instances.should.equal(2);
 
-        should(data).have.properties(keys);
-
-        keys.forEach(function(key) {
-          data[key].should.eql(opts[key]);
-        });
-
-        cb();
-      });
+              cb();
+            } catch (err) {
+              cb(err);
+            }
+          });
+        },
+        cb
+      );
     });
 
     async.series(jobs, done);
@@ -410,6 +427,7 @@ describe('Marathon', function() {
         cpus: 1,
         mem: 16,
         instances: 1,
+        minimumHealthCapacity: 0,
       };
 
       self.marathon.app.create(opts, cb);
@@ -428,12 +446,7 @@ describe('Marathon', function() {
     });
 
     jobs.push(function(cb) {
-      self.marathon.app.get(id, function(err) {
-        should.exist(err);
-        err.message.should.eql('marathon: app.get: not found');
-
-        cb();
-      });
+      helper.marathon.waitOnTask(self.marathon, id, false, cb);
     });
 
     async.series(jobs, done);
@@ -459,7 +472,7 @@ describe('Marathon', function() {
         'version'
       );
 
-      task.appId.should.eql(self.id);
+      task.appId.should.eql('/' + self.id);
 
       done();
     });

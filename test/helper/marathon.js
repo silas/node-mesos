@@ -23,7 +23,7 @@ function waitOnTask(marathon, id, wantExists, callback) {
           if (!err) {
             err = new Error('Task ' + (wantExists ? 'not found' : 'exists'));
           }
-          return setTimeout(function() { cb(err); }, 100);
+          return setTimeout(function() { cb(err); }, 200);
         }
 
         cb(null, data);
@@ -48,7 +48,7 @@ function clean(test, callback) {
 
   jobs.destroy = ['list', function(cb, results) {
     var ids = results.list.map(function(app) {
-      return app.id;
+      return app.id.slice(1);
     }).filter(function(id) {
       return id.match(/^test-/);
     });
