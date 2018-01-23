@@ -12,6 +12,7 @@ Mesos clients.
  * [Marathon](#marathon)
 
 <a name="chronos"/>
+
 ### mesos.Chronos([opts])
 
 Initialize a new Chronos client.
@@ -31,6 +32,7 @@ var chronos = mesos.Chronos({ host: '10.141.141.10' });
 ```
 
 <a name="chronos-job-create"/>
+
 ### chronos.job.create(opts, callback)
 
 Create job.
@@ -53,6 +55,7 @@ Options
  * name (String): job name
 
 <a name="chronos-job-list"/>
+
 ### chronos.job.list(callback)
 
 List jobs.
@@ -108,6 +111,7 @@ Options
  * job (String): job name
 
 <a name="marathon"/>
+
 ### mesos.Marathon([opts])
 
 Initialize a new Marathon client.
@@ -129,6 +133,7 @@ var marathon = mesos.Marathon({ host: '10.141.141.10' });
 See [Marathon REST][marathon-rest] documentation for more information.
 
 <a name="marathon-app-create"/>
+
 ### marathon.app.create(opts, callback)
 
 Create and start a new application.
@@ -144,6 +149,7 @@ Options
 And more, see [docs](https://github.com/mesosphere/marathon/blob/master/REST.md#post-v2apps).
 
 <a name="marathon-app-list"/>
+
 ### marathon.app.list([opts], callback)
 
 List all running applications.
@@ -153,6 +159,7 @@ Options
  * cmd (String, optional): filter apps by command
 
 <a name="marathon-app-get"/>
+
 ### marathon.app.get(opts, callback)
 
 Get application with by ID.
@@ -162,6 +169,7 @@ Options
  * id (String): app ID
 
 <a name="marathon-app-versions"/>
+
 ### marathon.app.versions(opts, callback)
 
 List the versions of an application by ID.
@@ -171,6 +179,7 @@ Options
  * id (String): app ID
 
 <a name="marathon-app-version"/>
+
 ### marathon.app.version(opts, callback)
 
 List the configuration of an application by ID at a specified version.
@@ -181,6 +190,7 @@ Options
  * version (String): app version
 
 <a name="marathon-app-update"/>
+
 ### marathon.app.update(opts, callback)
 
 Change parameters of a running application. The new application parameters
@@ -198,6 +208,7 @@ Options
 And more, see [docs](https://github.com/mesosphere/marathon/blob/master/REST.md#put-v2appsappid).
 
 <a name="marathon-app-destroy"/>
+
 ### marathon.app.destroy(opts, callback)
 
 Destroy an applicationb by ID.
@@ -207,6 +218,7 @@ Options
  * id (String): app ID
 
 <a name="marathon-app-tasks"/>
+
 ### marathon.app.tasks(opts, callback)
 
 List all running tasks for an application by ID.
@@ -216,6 +228,7 @@ Options
  * id (String): app ID
 
 <a name="marathon-app-kill"/>
+
 ### marathon.app.kill(opts, callback)
 
 Kill tasks that belong to an application.
@@ -228,6 +241,7 @@ Options
  * scale (Boolean, optional): scale application down by one
 
 <a name="marathon-eventSubscription-register"/>
+
 ### marathon.eventSubscription.register(opts, callback)
 
 Register a callback URL as an event subscriber.
@@ -237,11 +251,13 @@ Options
  * url (String): callback URL
 
 <a name="marathon-eventSubscription-list"/>
+
 ### marathon.eventSubscription.list(callback)
 
 List all event subscriber callback URLs.
 
 <a name="marathon-eventSubscription-unregister"/>
+
 ### marathon.eventSubscription.unregister(opts, callback)
 
 Unregister a callback URL.
@@ -251,6 +267,7 @@ Options
  * url (String): callback URL
 
 <a name="marathon-tasks"/>
+
 ### marathon.tasks(callback)
 
 List all running tasks.
